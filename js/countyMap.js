@@ -30,18 +30,6 @@ var scaleColor = d3.scale.linear()
 // Create basic legend and add generated colors to the 'colors' array
 // Should replace this with D3.js Axis
 for (var c = 0; c < steps; c++) {
-    //create legend
-    // svg.append("rect")
-    //     .attr("height", 20)
-    //     .attr("width", 20)
-    //     .attr("x", width - 120)
-    //     .attr("y", 200 + c*30)
-    //     .attr("fill", scaleColor(steps - 1 - c));
-    // svg.append("text")
-    //     .attr("x", width - 90)
-    //     .attr("y", 218 + c*30)
-    //     .text((max - increment*c) + ((c === 0) ? "+" : "-" + (max - increment*(c-1))));
-    //add these distinct colors to array
     colors.push(scaleColor(c));
 }
 
@@ -49,7 +37,10 @@ var tooltip = d3.select("body").append("div")
     .attr("class", "tooltip")
     .style("position", "absolute")
     .style("opacity", 0),
-    dataFormat = d3.format("$,.5r");
+    dataFormat = {
+        tens: d3.format("$,.4r"),
+        hundreds: d3.format("$,.5r")
+    };
 
 var projection = d3.geo.albersUsa()
     .scale(width*1.2)
@@ -103,14 +94,14 @@ function ready(error, us, data) {
 
 var adjustment = d3.scale.linear()
                 .domain([0, width])
-                .range([0, 450]);
+                .range([0, 400]);
 
 function addTooltip(label, number){
   tooltip.transition()
     .duration(200)
     .style("opacity", 0.9);
   tooltip.html(
-    label + ": " + dataFormat(parseFloat(number))
+    label + ": " + ((parseFloat(number) < 100) ? dataFormat.tens(parseFloat(number)) : dataFormat.hundreds(parseFloat(number)))
   )
     .style("left", (d3.event.pageX - adjustment(d3.event.pageX)) + "px")
     .style("top", (d3.event.pageY + 50) + "px");
