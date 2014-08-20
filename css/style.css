@@ -1,3 +1,8 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
 .tooltip {
   font: 14px sans-serif;
   background-color: #fff;
@@ -5,5 +10,25 @@
 }
 
 text {
-	font-family: Arial, sans-serif;
+  font-family: Arial, sans-serif;
+}
+
+.axis text, text.label {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.legend text {
+  font: 10px sans-serif;
+}
+.legend path {
+  fill: none;
+  stroke: none;
+  shape-rendering: crispEdges;
 }
