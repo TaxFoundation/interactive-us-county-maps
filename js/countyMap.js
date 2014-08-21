@@ -9,7 +9,7 @@ var svg = d3.select("body").append("svg")
 var dataScale = [],
     min = 80, //Floor for the first step
     max = 125, //Anything above the max is the final step
-    steps = 10;
+    steps = 10,
     increment = (max-min)/(steps-1);
 // Create the scale of data values from min to max by # of steps
 for (var step = 0; step < steps; step++) {
@@ -114,8 +114,8 @@ function drawLegend() {
         legendAxis;
 
     for (var i = 0, j = colors.length; i < j; i++){
-        fill = colors[i];
-        label = "$" + (min + increment*i) + ((i === j - 1) ? "+" : "-" + (min + increment*(i+1)));
+        var fill = colors[i];
+        var label = "$" + (min + increment*i) + ((i === j - 1) ? "+" : "-" + (min + increment*(i+1)));
         legendData[i+1]= {"color": fill, "label": label};
     }
 
