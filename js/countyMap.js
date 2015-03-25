@@ -6,22 +6,17 @@ var width = 580,
         .attr("height", height);
 
 // Define increments for data scale
-var dataScale = [],
-    min = 0, //Floor for the first step
-    max = 0.4, //Anything above the max is the final step
-    steps = 5,
+var min = 0, //Floor for the first step
+    max = 5000, //Anything above the max is the final step
+    steps = 6,
     increment = (max-min)/(steps-1);
-// Create the scale of data values from min to max by # of steps
-for (var step = 0; step < steps; step++) {
-    dataScale.push(min + increment * step);
-}
 
 // Create distinct colors for each increment based on two base colors
 var colors = [],
     borderColor = "#fff", //Color of borders between states
     noDataColor = "#ccc", //Color applied when no data matches an element
-    lowBaseColor = "#fde0dd", //Color applied at the end of the scale with the lowest values
-    highBaseColor = "#c51b8a",
+    lowBaseColor = "#ffffcc", //Color applied at the end of the scale with the lowest values
+    highBaseColor = "#253494",
      //Color applied at the end of the scale with the highest values
     scaleColor = d3.scale.linear()
         .domain([0,steps-1])
@@ -34,6 +29,7 @@ for (var c = 0; c < steps; c++) {
     colors.push(scaleColor(c));
 }
 
+
 var tooltip = d3.select("body").append("div")
     .attr("class", "tooltip")
     .style("position", "absolute")
@@ -42,7 +38,8 @@ var tooltip = d3.select("body").append("div")
     dataFormat = {
         percentage: d3.format("%"),
         tens: d3.format("$,.4r"),
-        hundreds: d3.format("$,.5r")
+        hundreds: d3.format("$,.5r"),
+        thousands: d3.format("$s")
     };
 
 var projection = d3.geo.albersUsa()
@@ -53,7 +50,7 @@ var path = d3.geo.path()
     .projection(projection);
 
 var mapColor = d3.scale.quantize()
-    .domain([min, max])
+    .domain([min, max + increment])
     .range(colors);
 
 var map = svg.append("g")
@@ -63,8 +60,10 @@ var legend = svg.append("g")
     .attr("class", "legend")
     .attr("transform", "translate(0," + (height - height * 0.1) + ")");
 
-var dataPath = "data/retirees.csv",
-    dataType = dataFormat.percentage;
+var dataPath = "data/tax-deductions.csv",
+    legendDataType = dataFormat.thousands,
+    tooltipDataType = dataFormat.tens,
+    observation = "taxDeductions";
 
 queue()
     .defer(d3.json, "data/us.json")
@@ -82,9 +81,9 @@ function ready(error, us, data) {
         .attr("id", function(d){return "county" + d.id;});
 
     data.forEach(function(d){
-        d3.select("#county" + d.id)
-            .style("fill", mapColor(parseFloat(d.retirementIncomePercentage)))
-            .on("mouseover", function(){ return addTooltip(d.name, d.retirementIncomePercentage); })
+        d3.select("#county" + d.county)
+            .style("fill", mapColor(parseFloat(d[observation])))
+            .on("mouseover", function(){ return addTooltip(d.name, parseFloat(d[observation])); })
             .on("mouseout", function(d){ tooltip.transition().duration(200).style("opacity",0); });
     });
 
@@ -107,7 +106,7 @@ function addTooltip(label, number){
     .duration(200)
     .style("opacity", 0.9);
   tooltip.html(
-    label + ": " + dataType(parseFloat(number))
+    label + ": " + tooltipDataType(number)
   )
     .style("left", (d3.event.pageX - adjustment(d3.event.pageX)) + "px")
     .style("top", (d3.event.pageY + 50) + "px");
@@ -121,7 +120,7 @@ function drawLegend() {
 
     for (var i = 0, j = colors.length; i < j; i++){
         var fill = colors[i];
-        var label = dataType(min + increment*i) + ((i === j - 1) ? "+" : "-" + dataType(min + increment*(i+1)));
+        var label = legendDataType(min + increment*i) + ((i === j - 1) ? "+" : "-" + legendDataType(min + increment*(i+1)));
         legendData[i+1]= {"color": fill, "label": label};
     }
 
