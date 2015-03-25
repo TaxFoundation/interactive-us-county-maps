@@ -7,16 +7,16 @@ var width = 580,
 
 // Define increments for data scale
 var min = 0, //Floor for the first step
-    max = 5000, //Anything above the max is the final step
-    steps = 6,
+    max = 0.4, //Anything above the max is the final step
+    steps = 6, //Final step represents anything at or above max
     increment = (max-min)/(steps-1);
 
 // Create distinct colors for each increment based on two base colors
 var colors = [],
     borderColor = "#fff", //Color of borders between states
     noDataColor = "#ccc", //Color applied when no data matches an element
-    lowBaseColor = "#ffffcc", //Color applied at the end of the scale with the lowest values
-    highBaseColor = "#253494",
+    lowBaseColor = "#fde0dd", //Color applied at the end of the scale with the lowest values
+    highBaseColor = "#c51b8a",
      //Color applied at the end of the scale with the highest values
     scaleColor = d3.scale.linear()
         .domain([0,steps-1])
@@ -50,7 +50,7 @@ var path = d3.geo.path()
     .projection(projection);
 
 var mapColor = d3.scale.quantize()
-    .domain([min, max + increment])
+    .domain([min, max + increment]) //Uses max+increment to make sure cutoffs between steps are correct
     .range(colors);
 
 var map = svg.append("g")
@@ -60,10 +60,11 @@ var legend = svg.append("g")
     .attr("class", "legend")
     .attr("transform", "translate(0," + (height - height * 0.1) + ")");
 
-var dataPath = "data/tax-deductions.csv",
-    legendDataType = dataFormat.thousands,
-    tooltipDataType = dataFormat.tens,
-    observation = "taxDeductions";
+// Set params
+var dataPath = "data/retirees.csv",
+    legendDataType = dataFormat.percentage,
+    tooltipDataType = dataFormat.percentage,
+    observation = "retirementIncomePercentage";
 
 queue()
     .defer(d3.json, "data/us.json")

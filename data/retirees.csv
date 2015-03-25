@@ -1,4 +1,4 @@
-state,id,retirementIncomePercentage,name
+state,county,retirementIncomePercentage,name
 1,1001,0.157348331,"Autauga County"
 1,1003,0.174945838,"Baldwin County"
 1,1005,0.167335413,"Barbour County"
@@ -1800,7 +1800,7 @@ state,id,retirementIncomePercentage,name
 35,35007,0.228046743,"Colfax County"
 35,35009,0.137466931,"Curry County"
 35,35011,0.150448855,"De Baca County"
-35,35013,0.171680484,"Doña Ana County"
+35,35013,0.171680484,"DoÃ±a Ana County"
 35,35015,0.085573103,"Eddy County"
 35,35017,0.233037196,"Grant County"
 35,35019,0.172509662,"Guadalupe County"
