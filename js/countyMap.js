@@ -1,3 +1,4 @@
+//
 var width = 580,
     height = 450,
 
@@ -6,17 +7,17 @@ var width = 580,
         .attr("height", height);
 
 // Define increments for data scale
-var min = 0, //Floor for the first step
-    max = 0.4, //Anything above the max is the final step
+var min = 0.05, //Floor for the first step
+    max = 0.3, //Anything above the max is the final step
     steps = 6, //Final step represents anything at or above max
     increment = (max-min)/(steps-1);
 
 // Create distinct colors for each increment based on two base colors
 var colors = [],
     borderColor = "#fff", //Color of borders between states
-    noDataColor = "#ccc", //Color applied when no data matches an element
-    lowBaseColor = "#fde0dd", //Color applied at the end of the scale with the lowest values
-    highBaseColor = "#c51b8a",
+    noDataColor = "#ddd", //Color applied when no data matches an element
+    lowBaseColor = "#4DD0E1", //Color applied at the end of the scale with the lowest values
+    highBaseColor = "#E91E63",
      //Color applied at the end of the scale with the highest values
     scaleColor = d3.scale.linear()
         .domain([0,steps-1])
@@ -60,17 +61,18 @@ var legend = svg.append("g")
     .attr("class", "legend")
     .attr("transform", "translate(0," + (height - height * 0.1) + ")");
 
-// Set params
-var dataPath = "data/retirees.csv",
+// Set params and queue map files
+var dataPath = "data/childTaxCreditTakers.csv",
     legendDataType = dataFormat.percentage,
     tooltipDataType = dataFormat.percentage,
-    observation = "retirementIncomePercentage";
+    observation = "childTaxCreditTakers";
 
 queue()
     .defer(d3.json, "data/us.json")
     .defer(d3.csv, dataPath)
     .await(ready);
 
+// Map-building functions
 function ready(error, us, data) {
     if (error) return console.error(error);
 
@@ -107,7 +109,7 @@ function addTooltip(label, number){
     .duration(200)
     .style("opacity", 0.9);
   tooltip.html(
-    label + ": " + tooltipDataType(number)
+    label + ": " + (number ? tooltipDataType(number) : "No Data")
   )
     .style("left", (d3.event.pageX - adjustment(d3.event.pageX)) + "px")
     .style("top", (d3.event.pageY + 50) + "px");
