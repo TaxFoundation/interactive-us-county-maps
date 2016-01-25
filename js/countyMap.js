@@ -1,156 +1,165 @@
-//
+// Set params and queue map files
+// Map variables
 var width = 580,
-    height = 450,
+  height = 450,
+  svg = d3.select('body').append('svg')
+    .attr('width', width)
+    .attr('height', height),
+  dataFormat = {
+    percentage: d3.format('%'),
+    tens: d3.format('$,.4r'),
+    hundreds: d3.format('$,.5r'),
+    thousands: d3.format('$s'),
+  },
 
-    svg = d3.select("body").append("svg")
-        .attr("width", width)
-        .attr("height", height);
+// Data variables
+  dataPath = 'data/RetirementDataCounty.csv',
+  legendDataType = dataFormat.percentage,
+  tooltipDataType = dataFormat.percentage,
+  observation = 'retirementIncome',
+  rangeTruncated = false,
 
 // Define increments for data scale
-var min = 0.05, //Floor for the first step
-    max = 0.3, //Anything above the max is the final step
-    steps = 6, //Final step represents anything at or above max
-    increment = (max-min)/(steps-1);
+  min = 0, //Floor for the first step
+  max = 0.38, //Anything above the max is the final step
+  steps = 6, //Final step represents anything at or above max
+  increment = (max - min) / (steps - 1),
+
+// Color variables
+  borderColor = '#fff', //Color of borders between states
+  noDataColor = '#ddd', //Color applied when no data matches an element
+  lowBaseColor = '#81C784', //Color applied at the end of the scale with the lowest values
+  highBaseColor = '#3F4DA1';
 
 // Create distinct colors for each increment based on two base colors
 var colors = [],
-    borderColor = "#fff", //Color of borders between states
-    noDataColor = "#ddd", //Color applied when no data matches an element
-    lowBaseColor = "#4DD0E1", //Color applied at the end of the scale with the lowest values
-    highBaseColor = "#E91E63",
-     //Color applied at the end of the scale with the highest values
-    scaleColor = d3.scale.linear()
-        .domain([0,steps-1])
-        .range([lowBaseColor,highBaseColor])
-        .interpolate(d3.interpolateHcl); //Don't like the colors you get? Try interpolateHcl or interpolateHsl!
+   //Color applied at the end of the scale with the highest values
+  scaleColor = d3.scale.linear()
+    .domain([0, steps - 1])
+    .range([lowBaseColor, highBaseColor])
+    .interpolate(d3.interpolateHcl); //Don't like the colors you get? Try interpolateHcl or interpolateHsl!
 
 // Create basic legend and add generated colors to the 'colors' array
 // Should replace this with D3.js Axis
 for (var c = 0; c < steps; c++) {
-    colors.push(scaleColor(c));
+  colors.push(scaleColor(c));
 }
 
-
-var tooltip = d3.select("body").append("div")
-    .attr("class", "tooltip")
-    .style("position", "absolute")
-    .style("opacity", 0),
-
-    dataFormat = {
-        percentage: d3.format("%"),
-        tens: d3.format("$,.4r"),
-        hundreds: d3.format("$,.5r"),
-        thousands: d3.format("$s")
-    };
+var tooltip = d3.select('body').append('div')
+  .attr('class', 'tooltip')
+  .style('position', 'absolute')
+  .style('opacity', 0);
 
 var projection = d3.geo.albersUsa()
-    .scale(width*1.2)
-    .translate([width / 2, height - height * 0.6]);
+  .scale(width * 1.2)
+  .translate([width / 2, height - height * 0.6]);
 
 var path = d3.geo.path()
-    .projection(projection);
+  .projection(projection);
 
 var mapColor = d3.scale.quantize()
-    .domain([min, max + increment]) //Uses max+increment to make sure cutoffs between steps are correct
-    .range(colors);
+  .domain([min, max + increment]) //Uses max+increment to make sure cutoffs between steps are correct
+  .range(colors);
 
-var map = svg.append("g")
-    .attr("class", "counties");
+var map = svg.append('g')
+  .attr('class', 'counties');
 
-var legend = svg.append("g")
-    .attr("class", "legend")
-    .attr("transform", "translate(0," + (height - height * 0.1) + ")");
-
-// Set params and queue map files
-var dataPath = "data/childTaxCreditTakers.csv",
-    legendDataType = dataFormat.percentage,
-    tooltipDataType = dataFormat.percentage,
-    observation = "childTaxCreditTakers";
+var legend = svg.append('g')
+  .attr('class', 'legend')
+  .attr('transform', 'translate(0,' + (height - height * 0.1) + ')');
 
 queue()
-    .defer(d3.json, "data/us.json")
-    .defer(d3.csv, dataPath)
-    .await(ready);
+  .defer(d3.json, 'data/us.json')
+  .defer(d3.csv, dataPath)
+  .await(ready);
 
 // Map-building functions
 function ready(error, us, data) {
-    if (error) return console.error(error);
+  if (error) return console.error(error);
 
-    map.selectAll("path")
-        .data(topojson.feature(us, us.objects.counties).features)
-    .enter().append("path")
-        .attr("d", path)
-        .attr("fill", noDataColor)
-        .attr("id", function(d){return "county" + d.id;});
+  map.selectAll('path')
+    .data(topojson.feature(us, us.objects.counties).features)
+  .enter().append('path')
+    .attr('d', path)
+    .attr('fill', noDataColor)
+    .attr('id', function(d){return 'county' + d.id;});
 
-    data.forEach(function(d){
-        d3.select("#county" + d.county)
-            .style("fill", mapColor(parseFloat(d[observation])))
-            .on("mouseover", function(){ return addTooltip(d.name, parseFloat(d[observation])); })
-            .on("mouseout", function(d){ tooltip.transition().duration(200).style("opacity",0); });
-    });
+  data.forEach(function(d) {
+    d3.select('#county' + d.id)
+      .style('fill', mapColor(parseFloat(d[observation])))
+      .on('mouseover', function() { return addTooltip(d.county, parseFloat(d[observation])); })
+      .on('mouseout', function(d) { tooltip.transition().duration(200).style('opacity', 0); });
+  });
 
-    map.append("path")
-        .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
-        .attr("fill", "none")
-        .attr("stroke", "#fff")
-        .attr("stroke-width", 1.5)
-        .attr("d", path);
+  map.append('path')
+    .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
+    .attr('fill', 'none')
+    .attr('stroke', '#fff')
+    .attr('stroke-width', 1.5)
+    .attr('d', path);
 
-    drawLegend();
+  drawLegend();
 }
 
 var adjustment = d3.scale.linear()
-                .domain([0, width])
-                .range([0, 150]);
+        .domain([0, width])
+        .range([0, 150]);
 
-function addTooltip(label, number){
+function addTooltip(label, number) {
   tooltip.transition()
-    .duration(200)
-    .style("opacity", 0.9);
+  .duration(200)
+  .style('opacity', 0.9);
   tooltip.html(
-    label + ": " + (number ? tooltipDataType(number) : "No Data")
+  label + ': ' + (number ? tooltipDataType(number) : 'No Data')
   )
-    .style("left", (d3.event.pageX - adjustment(d3.event.pageX)) + "px")
-    .style("top", (d3.event.pageY + 50) + "px");
+  .style('left', (d3.event.pageX - adjustment(d3.event.pageX)) + 'px')
+  .style('top', (d3.event.pageY + 50) + 'px');
 }
 
 function drawLegend() {
-    var legendData = [{"color": noDataColor, "label": "No Data"}],
-        legendDomain = [],
-        legendScale,
-        legendAxis;
+  var legendData = [{'color': noDataColor, 'label': 'No Data'}],
+    legendDomain = [],
+    legendScale,
+    legendAxis;
 
-    for (var i = 0, j = colors.length; i < j; i++){
-        var fill = colors[i];
-        var label = legendDataType(min + increment*i) + ((i === j - 1) ? "+" : "-" + legendDataType(min + increment*(i+1)));
-        legendData[i+1]= {"color": fill, "label": label};
+  if (rangeTruncated) {
+    for (var i = 0, j = colors.length; i < j; i++) {
+      var fill = colors[i];
+      var label = legendDataType(min + increment * i) + ((i === j - 1) ? '+' : '-' + legendDataType(min + increment * (i + 1)));
+      legendData[i + 1] = { color: fill, label: label };
     }
-
-    for (var k = 0, x = legendData.length; k < x; k++){
-        legendDomain.push(legendData[k].label);
+  } else {
+    for (var i = 0, j = colors.length; i < j; i++) {
+      var fill = colors[i];
+      var label = legendDataType(min + increment * i);
+      legendData[i + 1] = { color: fill, label: label };
     }
+  }
 
-    legendScale = d3.scale.ordinal()
-        .rangeRoundBands([0,width], 0.2)
-        .domain(legendDomain);
+  for (var k = 0, x = legendData.length; k < x; k++) {
+    legendDomain.push(legendData[k].label);
+  }
 
-    legendAxis = d3.svg.axis()
-        .scale(legendScale)
-        .orient("bottom");
+  legendScale = d3.scale.ordinal()
+    .rangeRoundBands([0, width], 0.2)
+    .domain(legendDomain);
 
-    legend.call(legendAxis);
+  legendAxis = d3.svg.axis()
+    .scale(legendScale)
+    .orient('bottom');
 
-    legend.selectAll("rect")
-        .data(legendData)
-    .enter()
-        .append("rect")
-        .attr("x", function(d){return legendScale(d.label);})
-        .attr("y", -30)
-        .attr("height", 30)
-        .attr("class", "legend-item")
-        .transition()
-        .duration(700)
-        .attrTween("width", function(){return d3.interpolate(0,legendScale.rangeBand());})
-        .attrTween("fill", function(d){return d3.interpolate("#fff",d.color);});
+  legend.call(legendAxis);
+
+  legend.selectAll('rect')
+    .data(legendData)
+  .enter()
+    .append('rect')
+    .attr('x', function(d) {return legendScale(d.label);})
+    .attr('y', -30)
+    .attr('height', 30)
+    .attr('class', 'legend-item')
+    .transition()
+    .duration(700)
+    .attrTween('width', function() {return d3.interpolate(0, legendScale.rangeBand());})
+    .attrTween('fill', function(d) {return d3.interpolate('#fff', d.color);});
 }
