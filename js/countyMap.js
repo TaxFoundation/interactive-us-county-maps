@@ -13,23 +13,27 @@ var width = 580,
   },
 
 // Data variables
-  dataPath = 'data/RetirementDataCounty.csv',
-  legendDataType = dataFormat.percentage,
-  tooltipDataType = dataFormat.percentage,
-  observation = 'retirementIncome',
-  rangeTruncated = false,
+  dataPath = 'data/median-property-tax.csv',
+  legendDataType = dataFormat.thousands,
+  tooltipDataType = dataFormat.tens,
+  countyId = 'fips',
+  countyName = 'name',
+  stateID = '',
+  stateName = '',
+  observation = 'tax',
+  rangeTruncated = true,
 
 // Define increments for data scale
   min = 0, //Floor for the first step
-  max = 0.38, //Anything above the max is the final step
+  max = 5000, //Anything above the max is the final step
   steps = 6, //Final step represents anything at or above max
   increment = (max - min) / (steps - 1),
 
 // Color variables
   borderColor = '#fff', //Color of borders between states
   noDataColor = '#ddd', //Color applied when no data matches an element
-  lowBaseColor = '#81C784', //Color applied at the end of the scale with the lowest values
-  highBaseColor = '#3F4DA1';
+  lowBaseColor = '#8ad7dd', //Color applied at the end of the scale with the lowest values
+  highBaseColor = '#00234c';
 
 // Create distinct colors for each increment based on two base colors
 var colors = [],
@@ -82,17 +86,17 @@ function ready(error, us, data) {
   .enter().append('path')
     .attr('d', path)
     .attr('fill', noDataColor)
-    .attr('id', function(d){return 'county' + d.id;});
+    .attr('id', function (d) { return 'county' + d.id; });
 
-  data.forEach(function(d) {
-    d3.select('#county' + d.id)
+  data.forEach(function (d) {
+    d3.select('#county' + d[countyId])
       .style('fill', mapColor(parseFloat(d[observation])))
-      .on('mouseover', function() { return addTooltip(d.county, parseFloat(d[observation])); })
-      .on('mouseout', function(d) { tooltip.transition().duration(200).style('opacity', 0); });
+      .on('mouseover', function () { return addTooltip(d[countyName], parseFloat(d[observation])); })
+      .on('mouseout', function (d) { tooltip.transition().duration(200).style('opacity', 0); });
   });
 
   map.append('path')
-    .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
+    .datum(topojson.mesh(us, us.objects.states, function (a, b) { return a !== b; }))
     .attr('fill', 'none')
     .attr('stroke', '#fff')
     .attr('stroke-width', 1.5)
@@ -154,12 +158,12 @@ function drawLegend() {
     .data(legendData)
   .enter()
     .append('rect')
-    .attr('x', function(d) {return legendScale(d.label);})
+    .attr('x', function (d) {return legendScale(d.label);})
     .attr('y', -30)
     .attr('height', 30)
     .attr('class', 'legend-item')
     .transition()
     .duration(700)
-    .attrTween('width', function() {return d3.interpolate(0, legendScale.rangeBand());})
-    .attrTween('fill', function(d) {return d3.interpolate('#fff', d.color);});
+    .attrTween('width', function () {return d3.interpolate(0, legendScale.rangeBand());})
+    .attrTween('fill', function (d) {return d3.interpolate('#fff', d.color);});
 }
