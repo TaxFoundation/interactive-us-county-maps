@@ -13,35 +13,46 @@ var width = 580,
   },
 
 // Data variables
-  dataPath = 'data/median-property-tax.csv',
+  dataPath = 'data/rpp-dollars-data-2016.csv',
   legendDataType = dataFormat.thousands,
   tooltipDataType = dataFormat.tens,
-  countyId = 'fips',
+  countyId = 'id',
   countyName = 'name',
   stateID = '',
   stateName = '',
-  observation = 'tax',
+  observation = 'rpp',
   rangeTruncated = true,
 
 // Define increments for data scale
-  min = 0, //Floor for the first step
-  max = 5000, //Anything above the max is the final step
-  steps = 6, //Final step represents anything at or above max
+  min = 84, //Floor for the first step
+  mid = 100,
+  max = 116, //Anything above the max is the final step
+  steps = 9, //Final step represents anything at or above max
   increment = (max - min) / (steps - 1),
 
 // Color variables
   borderColor = '#fff', //Color of borders between states
   noDataColor = '#ddd', //Color applied when no data matches an element
-  lowBaseColor = '#8ad7dd', //Color applied at the end of the scale with the lowest values
-  highBaseColor = '#00234c';
+  lowBaseColor = '#ffce00', //Color applied at the end of the scale with the lowest values
+  midBaseColor = '#ffaa93',
+  highBaseColor = '#ff1c6f';
 
 // Create distinct colors for each increment based on two base colors
 var colors = [],
    //Color applied at the end of the scale with the highest values
   scaleColor = d3.scale.linear()
-    .domain([0, steps - 1])
-    .range([lowBaseColor, highBaseColor])
-    .interpolate(d3.interpolateHcl); //Don't like the colors you get? Try interpolateHcl or interpolateHsl!
+    .domain([
+      0,
+      (steps - 1) / 2, //for midBaseColor
+      steps - 1,
+    ])
+    .range([
+      lowBaseColor,
+      midBaseColor,
+      highBaseColor,
+    ])
+    .interpolate(d3.interpolateHcl);
+    // Don't like the colors you get? Try interpolateHcl or interpolateHsl!
 
 // Create basic legend and add generated colors to the 'colors' array
 // Should replace this with D3.js Axis
@@ -62,7 +73,9 @@ var path = d3.geo.path()
   .projection(projection);
 
 var mapColor = d3.scale.quantize()
-  .domain([min, max + increment]) //Uses max+increment to make sure cutoffs between steps are correct
+  .domain([min,
+    mid,
+    max + increment,]) //Uses max+increment to make sure cutoffs between steps are correct
   .range(colors);
 
 var map = svg.append('g')
