@@ -3,8 +3,8 @@
 var width = 580,
   height = 450,
   svg = d3.select('body').append('svg')
-    .attr('width', width)
-    .attr('height', height),
+    .attr('width', '100%')
+    .attr('viewBox', '0 0 ' + width + ' ' + height),
   dataFormat = {
     percentage: d3.format('%'),
     tens: d3.format('$,.4r'),
@@ -13,14 +13,14 @@ var width = 580,
   },
 
 // Data variables
-  dataPath = 'data/median-property-tax.csv',
+  dataPath = 'data/salt.csv',
   legendDataType = dataFormat.thousands,
   tooltipDataType = dataFormat.tens,
-  countyId = 'fips',
+  countyId = 'FIPS',
   countyName = 'name',
   stateID = '',
   stateName = '',
-  observation = 'tax',
+  observation = 'deductions',
   rangeTruncated = true,
 
 // Define increments for data scale
@@ -106,7 +106,7 @@ function ready(error, us, data) {
 }
 
 var adjustment = d3.scale.linear()
-        .domain([0, width])
+        .domain([0, window.innerWidth])
         .range([0, 150]);
 
 function addTooltip(label, number) {
