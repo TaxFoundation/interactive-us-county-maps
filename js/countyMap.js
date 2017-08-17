@@ -7,40 +7,49 @@ var width = 580,
     .attr('viewBox', '0 0 ' + width + ' ' + height),
   dataFormat = {
     percentage: d3.format('%'),
+    dollars: d3.format('$,'),
+    dollarsAndCents: d3.format('$,.2f'),
     tens: d3.format('$,.4r'),
     hundreds: d3.format('$,.5r'),
     thousands: d3.format('$s'),
   },
 
 // Data variables
-  dataPath = 'data/salt.csv',
+  dataPath = 'data/hmid.csv',
   legendDataType = dataFormat.thousands,
-  tooltipDataType = dataFormat.tens,
+  tooltipDataType = dataFormat.dollars,
   countyId = 'FIPS',
   countyName = 'name',
   stateID = '',
   stateName = '',
-  observation = 'deductions',
+  observation = 'AVGhmid',
   rangeTruncated = true,
+  divergent = false,
 
 // Define increments for data scale
   min = 0, //Floor for the first step
-  max = 5000, //Anything above the max is the final step
-  steps = 6, //Final step represents anything at or above max
+  max = 3000, //Anything above the max is the final step
+  steps = 7, //Final step represents anything at or above max
   increment = (max - min) / (steps - 1),
 
 // Color variables
   borderColor = '#fff', //Color of borders between states
   noDataColor = '#ddd', //Color applied when no data matches an element
-  lowBaseColor = '#8ad7dd', //Color applied at the end of the scale with the lowest values
-  highBaseColor = '#00234c';
+  lowBaseColor = '#2b83ba', //Color applied at the end of the scale with the lowest values
+  midBaseColor = '#ffffbf';
+  highBaseColor = '#d7191c';
+
+var sequentialDomain = [0, steps - 1];
+var divergentDomain = [0, (steps - 1)/2, steps - 1];
+var sequentialRange = [lowBaseColor, highBaseColor];
+var divergentRange = [lowBaseColor, midBaseColor, highBaseColor];
 
 // Create distinct colors for each increment based on two base colors
 var colors = [],
    //Color applied at the end of the scale with the highest values
   scaleColor = d3.scale.linear()
-    .domain([0, steps - 1])
-    .range([lowBaseColor, highBaseColor])
+    .domain(divergent ? divergentDomain : sequentialDomain)
+    .range(divergent ? divergentRange : sequentialRange)
     .interpolate(d3.interpolateHcl); //Don't like the colors you get? Try interpolateHcl or interpolateHsl!
 
 // Create basic legend and add generated colors to the 'colors' array
@@ -89,7 +98,7 @@ function ready(error, us, data) {
     .attr('id', function (d) { return 'county' + d.id; });
 
   data.forEach(function (d) {
-    d3.select('#county' + d[countyId])
+    d3.select('#county' + parseInt(d[countyId]))
       .style('fill', mapColor(parseFloat(d[observation])))
       .on('mouseover', function () { return addTooltip(d[countyName], parseFloat(d[observation])); })
       .on('mouseout', function (d) { tooltip.transition().duration(200).style('opacity', 0); });
@@ -114,7 +123,7 @@ function addTooltip(label, number) {
   .duration(200)
   .style('opacity', 0.9);
   tooltip.html(
-  label + ': ' + (number ? tooltipDataType(number) : 'No Data')
+  label + ': ' + (typeof(+number) === 'number' ? tooltipDataType(number) : 'No Data')
   )
   .style('left', (d3.event.pageX - adjustment(d3.event.pageX)) + 'px')
   .style('top', (d3.event.pageY + 50) + 'px');

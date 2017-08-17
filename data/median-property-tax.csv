@@ -1848,7 +1848,7 @@ id,name,data
 36053,"Madison County, New York",3123
 36055,"Monroe County, New York",4307
 36057,"Montgomery County, New York",3177
-36059,"Nassau County, New York","10,000+"
+36059,"Nassau County, New York",10000
 36061,"New York County, New York",7208
 36063,"Niagara County, New York",3255
 36065,"Oneida County, New York",2901
@@ -1862,7 +1862,7 @@ id,name,data
 36081,"Queens County, New York",3705
 36083,"Rensselaer County, New York",4380
 36085,"Richmond County, New York",3717
-36087,"Rockland County, New York","10,000+"
+36087,"Rockland County, New York",10000
 36089,"St. Lawrence County, New York",2048
 36091,"Saratoga County, New York",3809
 36093,"Schenectady County, New York",4555
@@ -1878,7 +1878,7 @@ id,name,data
 36113,"Warren County, New York",2966
 36115,"Washington County, New York",3147
 36117,"Wayne County, New York",3418
-36119,"Westchester County, New York","10,000+"
+36119,"Westchester County, New York",10000
 36121,"Wyoming County, New York",2781
 36123,"Yates County, New York",2674
 37001,"Alamance County, North Carolina",1075
