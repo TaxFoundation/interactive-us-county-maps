@@ -7,6 +7,7 @@ var width = 580,
     .attr('viewBox', '0 0 ' + width + ' ' + height),
   dataFormat = {
     percentage: d3.format('%'),
+    percentageWithDecimals: d3.format(',.1%'),
     dollars: d3.format('$,'),
     dollarsAndCents: d3.format('$,.2f'),
     tens: d3.format('$,.4r'),
@@ -15,29 +16,29 @@ var width = 580,
   },
 
 // Data variables
-  dataPath = 'data/hmid.csv',
-  legendDataType = dataFormat.thousands,
-  tooltipDataType = dataFormat.dollars,
+  dataPath = 'data/salt.csv',
+  legendDataType = dataFormat.percentageWithDecimals,
+  tooltipDataType = dataFormat.percentageWithDecimals,
   countyId = 'FIPS',
-  countyName = 'name',
+  countyName = 'county',
   stateID = '',
   stateName = '',
-  observation = 'AVGhmid',
+  observation = 'percent',
   rangeTruncated = true,
   divergent = false,
 
 // Define increments for data scale
   min = 0, //Floor for the first step
-  max = 3000, //Anything above the max is the final step
-  steps = 7, //Final step represents anything at or above max
+  max = 0.02, //Anything above the max is the final step
+  steps = 5, //Final step represents anything at or above max
   increment = (max - min) / (steps - 1),
 
 // Color variables
   borderColor = '#fff', //Color of borders between states
   noDataColor = '#ddd', //Color applied when no data matches an element
-  lowBaseColor = '#2b83ba', //Color applied at the end of the scale with the lowest values
+  lowBaseColor = '#edf8fb', //Color applied at the end of the scale with the lowest values
   midBaseColor = '#ffffbf';
-  highBaseColor = '#d7191c';
+  highBaseColor = '#810f7c';
 
 var sequentialDomain = [0, steps - 1];
 var divergentDomain = [0, (steps - 1)/2, steps - 1];
