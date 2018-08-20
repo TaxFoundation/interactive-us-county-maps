@@ -16,29 +16,29 @@ var width = 580,
   },
 
 // Data variables
-  dataPath = 'data/salt.csv',
-  legendDataType = dataFormat.percentageWithDecimals,
-  tooltipDataType = dataFormat.percentageWithDecimals,
-  countyId = 'FIPS',
-  countyName = 'county',
+  dataPath = 'data/rpp-2018-county.csv',
+  legendDataType = dataFormat.dollars,
+  tooltipDataType = dataFormat.dollarsAndCents,
+  countyId = 'county',
+  countyName = 'name',
   stateID = '',
   stateName = '',
-  observation = 'percent',
+  observation = 'value',
   rangeTruncated = true,
-  divergent = false,
+  divergent = true,
 
 // Define increments for data scale
-  min = 0, //Floor for the first step
-  max = 0.02, //Anything above the max is the final step
-  steps = 5, //Final step represents anything at or above max
+  min = 75, //Floor for the first step
+  max = 125, //Anything above the max is the final step
+  steps = 11, //Final step represents anything at or above max
   increment = (max - min) / (steps - 1),
 
 // Color variables
   borderColor = '#fff', //Color of borders between states
   noDataColor = '#ddd', //Color applied when no data matches an element
-  lowBaseColor = '#edf8fb', //Color applied at the end of the scale with the lowest values
+  lowBaseColor = '#d73027', //Color applied at the end of the scale with the lowest values
   midBaseColor = '#ffffbf';
-  highBaseColor = '#810f7c';
+  highBaseColor = '#4575b4';
 
 var sequentialDomain = [0, steps - 1];
 var divergentDomain = [0, (steps - 1)/2, steps - 1];
@@ -47,11 +47,11 @@ var divergentRange = [lowBaseColor, midBaseColor, highBaseColor];
 
 // Create distinct colors for each increment based on two base colors
 var colors = [],
-   //Color applied at the end of the scale with the highest values
+  //Color applied at the end of the scale with the highest values
   scaleColor = d3.scale.linear()
     .domain(divergent ? divergentDomain : sequentialDomain)
     .range(divergent ? divergentRange : sequentialRange)
-    .interpolate(d3.interpolateHcl); //Don't like the colors you get? Try interpolateHcl or interpolateHsl!
+    .interpolate(d3.interpolateHsl); //Don't like the colors you get? Try interpolateHcl or interpolateHsl!
 
 // Create basic legend and add generated colors to the 'colors' array
 // Should replace this with D3.js Axis
@@ -139,7 +139,11 @@ function drawLegend() {
   if (rangeTruncated) {
     for (var i = 0, j = colors.length; i < j; i++) {
       var fill = colors[i];
-      var label = legendDataType(min + increment * i) + ((i === j - 1) ? '+' : '-' + legendDataType(min + increment * (i + 1)));
+      var label = legendDataType(min + increment * i)
+        + (
+          i === j - 1 ? '+' : '-'
+          + legendDataType(min + increment * (i + 1))
+        );
       legendData[i + 1] = { color: fill, label: label };
     }
   } else {

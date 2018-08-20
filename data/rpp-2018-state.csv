@@ -1,0 +1,52 @@
+id,state,value,rank
+01,Alabama,115.47,2
+02,Alaska,94.88,41
+04,Arizona,104.28,25
+05,Arkansas,115.07,3
+06,California,87.41,48
+08,Colorado,97.09,40
+09,Connecticut,92.00,45
+10,Delaware,99.80,37
+11,District of Columbia,86.28,(50)
+12,Florida,100.30,35
+13,Georgia,108.58,19
+15,Hawaii,84.46,50
+16,Idaho,107.53,21
+17,Illinois,101.11,33
+18,Indiana,110.74,13
+19,Iowa,110.86,11
+20,Kansas,110.50,16
+21,Kentucky,113.90,5
+22,Louisiana,110.62,14
+23,Maine,101.63,32
+24,Maryland,91.32,46
+25,Massachusetts,92.76,44
+26,Michigan,107.18,22
+27,Minnesota,102.56,30
+28,Mississippi,115.74,1
+29,Missouri,111.73,9
+30,Montana,106.27,24
+31,Nebraska,110.50,15
+32,Nevada,102.67,29
+33,New Hampshire,94.43,43
+34,New Jersey,88.34,47
+35,New Mexico,106.84,23
+36,New York,86.51,49
+37,North Carolina,110.01,17
+38,North Dakota,109.29,18
+39,Ohio,111.98,8
+40,Oklahoma,112.36,7
+41,Oregon,100.20,36
+42,Pennsylvania,101.63,31
+44,Rhode Island,100.40,34
+45,South Carolina,110.74,12
+46,South Dakota,113.25,6
+47,Tennessee,110.86,10
+48,Texas,103.20,27
+49,Utah,102.77,28
+50,Vermont,98.43,38
+51,Virginia,97.75,39
+53,Washington,94.79,42
+54,West Virginia,114.16,4
+55,Wisconsin,107.76,20
+56,Wyoming,103.41,26
