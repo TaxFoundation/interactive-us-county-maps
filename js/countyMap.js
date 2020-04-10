@@ -16,29 +16,29 @@ var width = 580,
   },
 
 // Data variables
-  dataPath = 'data/rpp-2018-county.csv',
-  legendDataType = dataFormat.dollars,
-  tooltipDataType = dataFormat.dollarsAndCents,
-  countyId = 'county',
-  countyName = 'name',
-  stateID = '',
-  stateName = '',
+  dataPath = 'data/ui-claims-percent.csv',
+  legendDataType = dataFormat.percentage,
+  tooltipDataType = dataFormat.percentageWithDecimals,
+  countyId = '',
+  countyName = '',
+  stateID = 'id',
+  stateName = 'state',
   observation = 'value',
-  rangeTruncated = true,
-  divergent = true,
+  rangeTruncated = false,
+  divergent = false,
 
 // Define increments for data scale
-  min = 75, //Floor for the first step
-  max = 125, //Anything above the max is the final step
+  min = 0, //Floor for the first step
+  max = 0.16, //Anything above the max is the final step
   steps = 11, //Final step represents anything at or above max
   increment = (max - min) / (steps - 1),
 
 // Color variables
   borderColor = '#fff', //Color of borders between states
   noDataColor = '#ddd', //Color applied when no data matches an element
-  lowBaseColor = '#d73027', //Color applied at the end of the scale with the lowest values
-  midBaseColor = '#ffffbf';
-  highBaseColor = '#4575b4';
+  lowBaseColor = 'rgb(255,247,243)', //Color applied at the end of the scale with the lowest values
+  midBaseColor = '#rgb(250,181,160)';
+  highBaseColor = 'rgb(73,0,106)';
 
 var sequentialDomain = [0, steps - 1];
 var divergentDomain = [0, (steps - 1)/2, steps - 1];
@@ -76,7 +76,7 @@ var mapColor = d3.scale.quantize()
   .range(colors);
 
 var map = svg.append('g')
-  .attr('class', 'counties');
+  .attr('class', 'states');
 
 var legend = svg.append('g')
   .attr('class', 'legend')
@@ -92,25 +92,20 @@ function ready(error, us, data) {
   if (error) return console.error(error);
 
   map.selectAll('path')
-    .data(topojson.feature(us, us.objects.counties).features)
+    .data(topojson.feature(us, us.objects.states).features)
   .enter().append('path')
-    .attr('d', path)
-    .attr('fill', noDataColor)
-    .attr('id', function (d) { return 'county' + d.id; });
-
-  data.forEach(function (d) {
-    d3.select('#county' + parseInt(d[countyId]))
-      .style('fill', mapColor(parseFloat(d[observation])))
-      .on('mouseover', function () { return addTooltip(d[countyName], parseFloat(d[observation])); })
-      .on('mouseout', function (d) { tooltip.transition().duration(200).style('opacity', 0); });
-  });
-
-  map.append('path')
-    .datum(topojson.mesh(us, us.objects.states, function (a, b) { return a !== b; }))
-    .attr('fill', 'none')
     .attr('stroke', '#fff')
     .attr('stroke-width', 1.5)
-    .attr('d', path);
+    .attr('d', path)
+    .attr('fill', noDataColor)
+    .attr('id', function (d) { return 'state' + d.id; });
+
+  data.forEach(function (d) {
+    d3.select('#state' + parseInt(d[stateID]))
+      .style('fill', mapColor(parseFloat(d[observation])))
+      .on('mouseover', function () { return addTooltip(d[stateName], parseFloat(d[observation])); })
+      .on('mouseout', function (d) { tooltip.transition().duration(200).style('opacity', 0); });
+  });
 
   drawLegend();
 }
@@ -131,7 +126,7 @@ function addTooltip(label, number) {
 }
 
 function drawLegend() {
-  var legendData = [{'color': noDataColor, 'label': 'No Data'}],
+  var legendData = [],
     legendDomain = [],
     legendScale,
     legendAxis;
@@ -150,7 +145,7 @@ function drawLegend() {
     for (var i = 0, j = colors.length; i < j; i++) {
       var fill = colors[i];
       var label = legendDataType(min + increment * i);
-      legendData[i + 1] = { color: fill, label: label };
+      legendData.push({ color: fill, label: label });
     }
   }
 
