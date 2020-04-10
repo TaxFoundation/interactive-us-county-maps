@@ -16,7 +16,7 @@ var width = 580,
   },
 
 // Data variables
-  dataPath = 'data/ui-claims-percent.csv',
+  dataPath = 'data/ui-claims-growth.csv',
   legendDataType = dataFormat.percentage,
   tooltipDataType = dataFormat.percentageWithDecimals,
   countyId = '',
@@ -28,8 +28,8 @@ var width = 580,
   divergent = false,
 
 // Define increments for data scale
-  min = 0, //Floor for the first step
-  max = 0.16, //Anything above the max is the final step
+  min = -0.3, //Floor for the first step
+  max = 2, //Anything above the max is the final step
   steps = 11, //Final step represents anything at or above max
   increment = (max - min) / (steps - 1),
 
