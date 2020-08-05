@@ -103,7 +103,7 @@ function ready(error, us, data) {
   data.forEach(function (d) {
     d3.select('#county' + parseInt(d[countyId]))
       .attr('fill', mapColor(parseFloat(d[observation])))
-      .on('mouseover', function () { return addTooltip(d[stateName], parseFloat(d[observation])); })
+      .on('mouseover', function () { return addTooltip(d[countyName], parseFloat(d[observation])); })
       .on('mouseout', function (d) { tooltip.transition().duration(200).style('opacity', 0); });
   });
 
