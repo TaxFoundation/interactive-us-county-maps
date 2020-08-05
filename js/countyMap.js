@@ -16,29 +16,29 @@ var width = 580,
   },
 
 // Data variables
-  dataPath = 'data/ui-claims-growth.csv',
-  legendDataType = dataFormat.percentage,
-  tooltipDataType = dataFormat.percentageWithDecimals,
-  countyId = '',
-  countyName = '',
-  stateID = 'id',
-  stateName = 'state',
+  dataPath = 'data/rpp-2020-county.csv',
+  legendDataType = dataFormat.dollars,
+  tooltipDataType = dataFormat.dollarsAndCents,
+  countyId = 'county',
+  countyName = 'name',
+  stateID = '',
+  stateName = '',
   observation = 'value',
-  rangeTruncated = false,
-  divergent = false,
+  rangeTruncated = true,
+  divergent = true,
 
 // Define increments for data scale
-  min = -0.3, //Floor for the first step
-  max = 2, //Anything above the max is the final step
+  min = 75, //Floor for the first step
+  max = 125, //Anything above the max is the final step
   steps = 11, //Final step represents anything at or above max
   increment = (max - min) / (steps - 1),
 
 // Color variables
   borderColor = '#fff', //Color of borders between states
   noDataColor = '#ddd', //Color applied when no data matches an element
-  lowBaseColor = 'rgb(255,247,243)', //Color applied at the end of the scale with the lowest values
-  midBaseColor = '#rgb(250,181,160)';
-  highBaseColor = 'rgb(73,0,106)';
+  lowBaseColor = '#d73027', //Color applied at the end of the scale with the lowest values
+  midBaseColor = '#ffffbf';
+  highBaseColor = '#4575b4';
 
 var sequentialDomain = [0, steps - 1];
 var divergentDomain = [0, (steps - 1)/2, steps - 1];
@@ -92,17 +92,17 @@ function ready(error, us, data) {
   if (error) return console.error(error);
 
   map.selectAll('path')
-    .data(topojson.feature(us, us.objects.states).features)
+    .data(topojson.feature(us, us.objects.counties).features)
   .enter().append('path')
-    .attr('stroke', '#fff')
-    .attr('stroke-width', 1.5)
+    // .attr('stroke', '#fff')
+    // .attr('stroke-width', 0.5)
     .attr('d', path)
     .attr('fill', noDataColor)
-    .attr('id', function (d) { return 'state' + d.id; });
+    .attr('id', function (d) { return 'county' + d.id; });
 
   data.forEach(function (d) {
-    d3.select('#state' + parseInt(d[stateID]))
-      .style('fill', mapColor(parseFloat(d[observation])))
+    d3.select('#county' + parseInt(d[countyId]))
+      .attr('fill', mapColor(parseFloat(d[observation])))
       .on('mouseover', function () { return addTooltip(d[stateName], parseFloat(d[observation])); })
       .on('mouseout', function (d) { tooltip.transition().duration(200).style('opacity', 0); });
   });
@@ -139,7 +139,7 @@ function drawLegend() {
           i === j - 1 ? '+' : '-'
           + legendDataType(min + increment * (i + 1))
         );
-      legendData[i + 1] = { color: fill, label: label };
+      legendData[i] = { color: fill, label: label };
     }
   } else {
     for (var i = 0, j = colors.length; i < j; i++) {
