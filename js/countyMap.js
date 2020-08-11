@@ -103,9 +103,28 @@ function ready(error, us, data) {
   data.forEach(function (d) {
     d3.select('#county' + parseInt(d[countyId]))
       .attr('fill', mapColor(parseFloat(d[observation])))
-      .on('mouseover', function () { return addTooltip(d[countyName], parseFloat(d[observation])); })
-      .on('mouseout', function (d) { tooltip.transition().duration(200).style('opacity', 0); });
+      .attr('stroke', mapColor(parseFloat(d[observation])))
+      .attr('stroke-width', 0.3)
+      .on('mouseover', function () {
+        return addTooltip(d[countyName], parseFloat(d[observation]));
+      })
+      .on('mouseout', function (d) {
+        tooltip.transition().duration(200).style('opacity', 0);
+      });
   });
+
+  map
+    .append('path')
+    .datum(
+      topojson.mesh(us, us.objects.states, function (a, b) {
+        return a !== b;
+      })
+    )
+    .attr('fill', 'none')
+    .attr('stroke', '#fff')
+    .attr('stroke-width', 1.5)
+    .attr('stroke-linejoin', 'round')
+    .attr('d', path);
 
   drawLegend();
 }
