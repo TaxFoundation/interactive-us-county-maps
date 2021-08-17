@@ -26,8 +26,9 @@ text {
 }
 
 .legend text {
-  font: 7px sans-serif;
+  font: 6px sans-serif;
 }
+
 .legend path {
   fill: none;
   stroke: none;

@@ -23,14 +23,14 @@ var width = 580,
   countyName = 'COUNTYNAME',
   stateID = '',
   stateName = '',
-  observation = 'TOTAL_SALT',
+  observation = 'LIMITED_SALT',
   rangeTruncated = true,
   divergent = true,
 
   // Define increments for data scale
   min = 0, //Floor for the first step
-  max = 3000, //Anything above the max is the final step
-  steps = 11, //Final step represents anything at or above max
+  max = 1000, //Anything above the max is the final step
+  steps = 6, //Final step represents anything at or above max
   increment = (max - min) / (steps - 1),
 
   // Color variables
