@@ -29,8 +29,8 @@ var width = 580,
 
   // Define increments for data scale
   min = 0, //Floor for the first step
-  max = 3000, //Anything above the max is the final step
-  steps = 11, //Final step represents anything at or above max
+  max = 2000, //Anything above the max is the final step
+  steps = 6, //Final step represents anything at or above max
   increment = (max - min) / (steps - 1),
 
   // Color variables
