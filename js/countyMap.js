@@ -15,33 +15,33 @@ var width = 580,
     thousands: d3.format('$s'),
   },
 
-// Data variables
-  dataPath = 'data/rpp-2018-county.csv',
+  // Data variables
+  dataPath = 'data/modified_proptax.csv',
   legendDataType = dataFormat.dollars,
   tooltipDataType = dataFormat.dollarsAndCents,
-  countyId = 'county',
-  countyName = 'name',
+  countyId = 'GEO_ID',
+  countyName = 'NAME',
   stateID = '',
   stateName = '',
-  observation = 'value',
+  observation = 'VALUE',
   rangeTruncated = true,
   divergent = true,
 
-// Define increments for data scale
-  min = 75, //Floor for the first step
-  max = 125, //Anything above the max is the final step
-  steps = 11, //Final step represents anything at or above max
+  // Define increments for data scale
+  min = 200, //Floor for the first step
+  max = 4000, //Anything above the max is the final step
+  steps = 9, //Final step represents anything at or above max
   increment = (max - min) / (steps - 1),
 
-// Color variables
+  // Color variables
   borderColor = '#fff', //Color of borders between states
   noDataColor = '#ddd', //Color applied when no data matches an element
-  lowBaseColor = '#d73027', //Color applied at the end of the scale with the lowest values
-  midBaseColor = '#ffffbf';
-  highBaseColor = '#4575b4';
+  lowBaseColor = '#EDF8B1', //Color applied at the end of the scale with the lowest values
+  midBaseColor = '#60E686';
+highBaseColor = '#2C7FB8';
 
 var sequentialDomain = [0, steps - 1];
-var divergentDomain = [0, (steps - 1)/2, steps - 1];
+var divergentDomain = [0, (steps - 1) / 2, steps - 1];
 var sequentialRange = [lowBaseColor, highBaseColor];
 var divergentRange = [lowBaseColor, midBaseColor, highBaseColor];
 
@@ -93,7 +93,7 @@ function ready(error, us, data) {
 
   map.selectAll('path')
     .data(topojson.feature(us, us.objects.counties).features)
-  .enter().append('path')
+    .enter().append('path')
     .attr('d', path)
     .attr('fill', noDataColor)
     .attr('id', function (d) { return 'county' + d.id; });
@@ -116,22 +116,22 @@ function ready(error, us, data) {
 }
 
 var adjustment = d3.scale.linear()
-        .domain([0, window.innerWidth])
-        .range([0, 150]);
+  .domain([0, window.innerWidth])
+  .range([0, 150]);
 
 function addTooltip(label, number) {
   tooltip.transition()
-  .duration(200)
-  .style('opacity', 0.9);
+    .duration(200)
+    .style('opacity', 0.9);
   tooltip.html(
-  label + ': ' + (typeof(+number) === 'number' ? tooltipDataType(number) : 'No Data')
+    label + ': ' + (typeof (+number) === 'number' ? tooltipDataType(number) : 'No Data')
   )
-  .style('left', (d3.event.pageX - adjustment(d3.event.pageX)) + 'px')
-  .style('top', (d3.event.pageY + 50) + 'px');
+    .style('left', (d3.event.pageX - adjustment(d3.event.pageX)) + 'px')
+    .style('top', (d3.event.pageY + 50) + 'px');
 }
 
 function drawLegend() {
-  var legendData = [{'color': noDataColor, 'label': 'No Data'}],
+  var legendData = [{ 'color': noDataColor, 'label': 'No Data' }],
     legendDomain = [],
     legendScale,
     legendAxis;
@@ -142,7 +142,7 @@ function drawLegend() {
       var label = legendDataType(min + increment * i)
         + (
           i === j - 1 ? '+' : '-'
-          + legendDataType(min + increment * (i + 1))
+            + legendDataType(min + increment * (i + 1))
         );
       legendData[i + 1] = { color: fill, label: label };
     }
@@ -170,14 +170,14 @@ function drawLegend() {
 
   legend.selectAll('rect')
     .data(legendData)
-  .enter()
+    .enter()
     .append('rect')
-    .attr('x', function (d) {return legendScale(d.label);})
+    .attr('x', function (d) { return legendScale(d.label); })
     .attr('y', -30)
     .attr('height', 30)
     .attr('class', 'legend-item')
     .transition()
     .duration(700)
-    .attrTween('width', function () {return d3.interpolate(0, legendScale.rangeBand());})
-    .attrTween('fill', function (d) {return d3.interpolate('#fff', d.color);});
+    .attrTween('width', function () { return d3.interpolate(0, legendScale.rangeBand()); })
+    .attrTween('fill', function (d) { return d3.interpolate('#fff', d.color); });
 }
