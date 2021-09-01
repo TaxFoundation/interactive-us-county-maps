@@ -1774,12 +1774,12 @@ GEO_ID,NAME,VALUE
 33017,"Strafford County, New Hampshire",5747
 33019,"Sullivan County, New Hampshire",4709
 34001,"Atlantic County, New Jersey",6241
-34003,"Bergen County, New Jersey","10,000+"
+34003,"Bergen County, New Jersey",10000
 34005,"Burlington County, New Jersey",6896
 34007,"Camden County, New Jersey",6973
 34009,"Cape May County, New Jersey",4556
 34011,"Cumberland County, New Jersey",4458
-34013,"Essex County, New Jersey","10,000+"
+34013,"Essex County, New Jersey",10000
 34015,"Gloucester County, New Jersey",6970
 34017,"Hudson County, New Jersey",8502
 34019,"Hunterdon County, New Jersey",9662
@@ -1792,7 +1792,7 @@ GEO_ID,NAME,VALUE
 34033,"Salem County, New Jersey",5777
 34035,"Somerset County, New Jersey",9419
 34037,"Sussex County, New Jersey",7451
-34039,"Union County, New Jersey","10,000+"
+34039,"Union County, New Jersey",10000
 34041,"Warren County, New Jersey",7312
 35001,"Bernalillo County, New Mexico",2128
 35003,"Catron County, New Mexico",589
@@ -1856,7 +1856,7 @@ GEO_ID,NAME,VALUE
 36053,"Madison County, New York",3422
 36055,"Monroe County, New York",4781
 36057,"Montgomery County, New York",3233
-36059,"Nassau County, New York","10,000+"
+36059,"Nassau County, New York",10000
 36061,"New York County, New York",9817
 36063,"Niagara County, New York",3577
 36065,"Oneida County, New York",3230
@@ -1870,7 +1870,7 @@ GEO_ID,NAME,VALUE
 36081,"Queens County, New York",4726
 36083,"Rensselaer County, New York",4735
 36085,"Richmond County, New York",4676
-36087,"Rockland County, New York","10,000+"
+36087,"Rockland County, New York",10000
 36089,"St. Lawrence County, New York",2414
 36091,"Saratoga County, New York",4139
 36093,"Schenectady County, New York",4749
@@ -1886,7 +1886,7 @@ GEO_ID,NAME,VALUE
 36113,"Warren County, New York",3326
 36115,"Washington County, New York",3356
 36117,"Wayne County, New York",3612
-36119,"Westchester County, New York","10,000+"
+36119,"Westchester County, New York",10000
 36121,"Wyoming County, New York",3233
 36123,"Yates County, New York",2812
 37001,"Alamance County, North Carolina",1226
