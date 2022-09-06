@@ -16,14 +16,14 @@ var width = 580,
   },
 
   // Data variables
-  dataPath = 'data/modified_proptax.csv',
+  dataPath = 'data/median-property-tax-2020-21.csv',
   legendDataType = dataFormat.dollars,
   tooltipDataType = dataFormat.dollarsAndCents,
-  countyId = 'GEO_ID',
-  countyName = 'NAME',
+  countyId = 'id',
+  countyName = 'name',
   stateID = '',
   stateName = '',
-  observation = 'VALUE',
+  observation = 'data',
   rangeTruncated = true,
   divergent = true,
 
@@ -119,16 +119,31 @@ var adjustment = d3.scale.linear()
   .domain([0, window.innerWidth])
   .range([0, 150]);
 
-function addTooltip(label, number) {
-  tooltip.transition()
+  function addTooltip(label, number) {
+    let toolTipData;
+
+    switch(number) {
+      case 200:
+        toolTipData = 'Less Than $200';
+        break;
+      case 10000:
+        toolTipData = 'Greater Than $10,000';
+        break;
+      default:
+        toolTipData = tooltipDataType(number);
+    } 
+
+    if (isNaN(number)) toolTipData = 'No Data';
+  
+    tooltip.transition()
     .duration(200)
     .style('opacity', 0.9);
-  tooltip.html(
-    label + ': ' + (typeof (+number) === 'number' ? tooltipDataType(number) : 'No Data')
-  )
+    tooltip.html(
+    label + ': ' + toolTipData
+    )
     .style('left', (d3.event.pageX - adjustment(d3.event.pageX)) + 'px')
     .style('top', (d3.event.pageY + 50) + 'px');
-}
+  }
 
 function drawLegend() {
   var legendData = [{ 'color': noDataColor, 'label': 'No Data' }],
