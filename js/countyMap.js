@@ -23,7 +23,7 @@ var width = 580,
   countyName = 'COUNTYNAME',
   stateID = 'STATEFIPS',
   stateName = 'STATE',
-  observation = 'TOTAL_SALT',
+  observation = 'LIMITED_SALT',
   rangeTruncated = true,
   divergent = true,
 
